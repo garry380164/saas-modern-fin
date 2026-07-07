@@ -9,6 +9,16 @@ import CubeCore from "./CubeCore";
 export default function ScrollStory() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = React.useState(0);
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -82,8 +92,8 @@ export default function ScrollStory() {
     { id: 8, name: "metadata_schema.yaml", type: "clean", x: 120, y: 270, rot: 10, label: "元數據結構" },
   ];
 
-  // The Y-offset for AI Agent Core (placed 170px below text center)
-  const centerYOffset = 170;
+  // The Y-offset for AI Agent Core (placed below text center, adaptive on mobile)
+  const centerYOffset = isMobile ? 190 : 170;
 
   // Helper to compute card layout states driven by s2Prog
   const getS2CardState = (idx: number) => {
@@ -520,9 +530,9 @@ export default function ScrollStory() {
       {/* STICKY CONTAINER */}
       <div className="sticky top-0 left-0 w-full h-screen flex items-center overflow-hidden">
         {stage === 1 && (
-          <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12 items-center pt-24 lg:pt-0">
             {/* Left Side: Dynamic Text Story */}
-            <div className="lg:col-span-5 flex flex-col justify-center gap-6 z-20">
+            <div className="lg:col-span-5 flex flex-col justify-center gap-4 lg:gap-6 z-20">
               <AnimatePresence mode="wait">
                 <motion.div
                   key="stage1"
@@ -531,18 +541,18 @@ export default function ScrollStory() {
                     transform: `translate3d(0, ${s1TextY}px, 0)`,
                     filter: `blur(${s1TextBlur}px)`,
                   }}
-                  className="flex flex-col gap-4 text-[#f4f6ef]"
+                  className="flex flex-col gap-2 lg:gap-4 text-[#f4f6ef]"
                 >
                   {/* <span className="text-xs font-mono tracking-[0.2em] text-emerald-400 uppercase font-semibold">
                     階段 01 — 混亂異質數據
                   </span> */}
-                  <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
                     數據過於混亂且缺乏結構，
-                    <span className="text-emerald-400 mt-1">
+                    <span className="text-emerald-400 mt-1 block lg:inline">
                       多元異質資料無法直接整合與統計。
                     </span>
                   </h2>
-                  <p className="text-sm md:text-base text-slate-300 leading-relaxed">
+                  <p className="text-sm sm:text-base md:text-lg text-slate-300 leading-relaxed">
                     原始日誌格式各異、交易敘述晦澀、缺乏地理情境、甚至包含敏感欄位與重複數據。面對這種無序的「數據星雲」，進行任何有效的財務統計與決策都是工程噩夢。
                   </p>
                 </motion.div>
@@ -550,7 +560,7 @@ export default function ScrollStory() {
             </div>
 
             {/* Right Side: Dynamic Visual Sandbox */}
-            <div className="lg:col-span-7 flex justify-center items-center h-[500px] relative">
+            <div className="lg:col-span-7 flex justify-center items-center h-[260px] sm:h-[350px] lg:h-[500px] relative">
               <div className="absolute inset-0 flex items-center justify-center">
                 {/* Background data stream noise */}
                 <div
@@ -572,7 +582,7 @@ export default function ScrollStory() {
                   </div>
                 </div>
 
-                <div className="relative w-full max-w-[580px] h-[450px] flex items-center justify-center">
+                <div className="relative w-full max-w-[580px] h-[450px] flex items-center justify-center scale-[0.55] sm:scale-75 lg:scale-100 origin-center">
                   {stage1Cards.map((card, idx) => {
                     const cardState = getS1CardState(idx);
                     if (cardState.style.opacity === 0) return null;
@@ -644,10 +654,13 @@ export default function ScrollStory() {
           <div className="relative w-full max-w-[1200px] mx-auto px-6 md:px-12 h-[600px] flex items-center justify-center">
             {/* Centered Text Story overlay */}
             <div 
-              className="absolute z-35 text-center max-w-3xl px-6 flex flex-col gap-4 pointer-events-none transition-all duration-300"
-              style={{ opacity: centerTextOpacity }}
+              className="absolute top-24 md:top-auto z-35 text-center max-w-3xl px-6 flex flex-col gap-2 md:gap-4 pointer-events-none transition-all duration-300"
+              style={{ 
+                opacity: centerTextOpacity,
+                transform: isMobile ? `translate3d(0, ${-80 * c3Opacity}px, 0)` : 'none'
+              }}
             >
-              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight text-[#122315] drop-shadow-[0_2px_8px_rgba(255,255,255,0.85)]">
+              <h2 className="text-xl sm:text-2xl md:text-4xl font-extrabold tracking-tight leading-tight text-[#122315] drop-shadow-[0_2px_8px_rgba(255,255,255,0.85)]">
                 Finai 即時豐富交易數據，
                 <span className="text-emerald-600 block mt-1">
                   在每個層面添加結構、精確性與智能分析。
@@ -885,31 +898,182 @@ export default function ScrollStory() {
                 </div>
               </div>
 
-              {/* Mobile Layout: Stacked wireframe cards */}
-              <div className="flex md:hidden flex-col gap-4 w-full px-4 max-h-[380px] overflow-y-auto">
-                <Card outerClassName="!p-4 border-slate-300 bg-white" tickColor="border-emerald-500">
-                  <div className="flex items-center justify-between text-slate-800">
-                    <span className="text-xs font-bold font-sans">蘋果直營店 (Apple Store)</span>
-                    <span className="text-xs font-bold font-mono">-$78.36</span>
-                  </div>
-                </Card>
-                <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
-                  <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-1 font-sans">▸ 地理位置</span>
-                  <span className="text-xs text-slate-700 block font-sans">美國德州達拉斯波爾克南街 8770 號</span>
-                </Card>
-                <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
-                  <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-1.5 font-sans">[API 金鑰]</span>
-                  <span className="text-xs text-emerald-800 bg-[#f4f6ef] border border-black/5 px-1.5 py-0.5 rounded block truncate font-mono">
-                    AIzaSyDaOmMKs4J9xXZ-Hj9
-                  </span>
-                </Card>
-                <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
-                  <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold mb-1 font-sans">
-                    <span>延遲時間</span>
-                    <span className="text-emerald-600 font-bold">50MS</span>
-                  </div>
-                </Card>
+              {/* Mobile Layout: Stacked wireframe cards (positioned below the heading text, animating sequentially) */}
+              <div 
+                className="flex md:hidden flex-col gap-3 w-full px-6 max-h-[360px] overflow-y-auto absolute top-[190px] pb-6 transition-transform duration-75"
+                style={{
+                  transform: `translate3d(0, ${-210 * c3Opacity}px, 0)`
+                }}
+              >
+                {/* 1. cURL Terminal Card */}
+                {s3Prog > 0 && (
+                  <motion.div
+                    style={{ opacity: c1Opacity, y: (1 - c1Opacity) * 12 }}
+                    className="w-full shrink-0"
+                  >
+                    <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
+                      <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-100 text-slate-400 font-bold text-[9px] font-mono">
+                        <span>cURL</span>
+                        <span className="px-1 py-0.5 rounded bg-slate-50 border border-slate-200 text-[8px]">API</span>
+                      </div>
+                      <pre className="text-slate-600 font-mono text-[9px] leading-normal whitespace-pre min-h-[48px] overflow-x-auto">
+                        {currentCurlText}
+                      </pre>
+                    </Card>
+                  </motion.div>
+                )}
+
+                {/* 2. API Key & Latency Card */}
+                {s3Prog >= 0.20 && (
+                  <motion.div
+                    style={{ opacity: c2Opacity, y: (1 - c2Opacity) * 12 }}
+                    className="w-full shrink-0 flex flex-col gap-2"
+                  >
+                    <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
+                      <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block mb-1 font-sans">[API 金鑰]</span>
+                      <span className="text-[10.5px] text-emerald-800 bg-[#f4f6ef] border border-black/5 px-1.5 py-0.5 rounded block truncate font-mono">
+                        {currentApiKey || "AIzaSy..."}
+                      </span>
+                    </Card>
+                    <Card outerClassName="!p-2.5 border-slate-200 bg-white" tickColor="border-slate-800">
+                      <div className="flex justify-between items-center text-[9px] text-slate-400 font-bold font-sans">
+                        <span>延遲時間</span>
+                        <span className="text-emerald-600 font-bold">50MS</span>
+                      </div>
+                    </Card>
+                  </motion.div>
+                )}
+
+                {/* 4. Location & Merchant Card */}
+                {s3Prog >= 0.55 && (
+                  <motion.div
+                    style={{ opacity: c4Opacity, y: (1 - c4Opacity) * 12 }}
+                    className="w-full shrink-0 flex flex-col gap-2"
+                  >
+                    <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
+                      <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5 font-sans">▸ 驗證商戶</span>
+                      <span className="text-xs font-bold text-slate-800 block min-h-[14px]">
+                        {scrambleReveal("蘋果公司 (APPLE)", c4ScrambleProg)}
+                      </span>
+                    </Card>
+                    <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
+                      <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5 font-sans">▸ 地理位置</span>
+                      <span className="text-xs text-slate-700 block font-sans min-h-[14px] leading-tight">
+                        {scrambleReveal("美國德州達拉斯波爾克南街 8770 號", c4ScrambleProg)}
+                      </span>
+                    </Card>
+                  </motion.div>
+                )}
+
+                {/* 5. Data Category Card */}
+                {s3Prog >= 0.76 && (
+                  <motion.div
+                    style={{ opacity: c5Opacity, y: (1 - c5Opacity) * 12 }}
+                    className="w-full shrink-0"
+                  >
+                    <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
+                      <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5 font-sans">▸ 數據分類</span>
+                      <span className="text-xs font-extrabold text-slate-800 block min-h-[14px]">
+                        {scrambleReveal("科技與技術", c5ScrambleProg)}
+                      </span>
+                      <span className="text-[10px] text-slate-400 block mt-1 min-h-[24px] leading-tight">
+                        {scrambleReveal("軟體與服務", c5ScrambleProg)}
+                        <br />
+                        {scrambleReveal("消費性電子產品", c5ScrambleProg)}
+                      </span>
+                    </Card>
+                  </motion.div>
+                )}
               </div>
+
+              {/* 3. Floating detailed receipt card for mobile - slides up from screen bottom */}
+              {s3Prog >= 0.40 && (
+                <div
+                  className="fixed bottom-4 left-1/2 z-50 md:hidden w-[90%] max-w-[340px] transition-all duration-100 ease-out will-change-transform"
+                  style={{
+                    transform: `translate3d(-50%, ${(1 - c3Opacity) * 500}px, 0)`,
+                    opacity: c3Opacity,
+                  }}
+                >
+                  <div className="flex flex-col gap-2 w-full text-left">
+                    {/* Top block: Receipt Header */}
+                    <div className="bg-[#122315] text-white rounded-2xl p-5 shadow-[0_10px_25px_-5px_rgba(18,35,21,0.25)] flex flex-col justify-between h-[135px]">
+                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#122315] text-lg font-bold">
+                        
+                      </div>
+                      <div className="flex justify-between items-end mt-4">
+                        <div className="flex flex-col">
+                          <span className="text-xs font-bold font-sans">Apple Store Tribeca</span>
+                          <span className="text-[10px] text-white/50 font-mono mt-0.5">2025-09-27 09:23:16</span>
+                        </div>
+                        <span className="text-2xl font-extrabold font-mono tracking-tight">{currentAmountStr}</span>
+                      </div>
+                    </div>
+
+                    {/* Middle block: Green map mock (Stylized Google Map layout) */}
+                    <div className="h-[90px] rounded-2xl bg-[#f5f6f4] border border-black/5 relative overflow-hidden shadow-sm">
+                      <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                        {/* Park Green Areas */}
+                        <path d="M 0 10 Q 40 25 25 90 L 0 90 Z" fill="#e2f0d9" />
+                        <rect x="185" y="15" width="45" height="25" rx="3" fill="#e2f0d9" />
+                        
+                        {/* River / Creek (Light blue line) */}
+                        <path d="M 290 0 C 275 30 280 60 305 90" fill="none" stroke="#d4e6f1" strokeWidth="3" />
+
+                        {/* Dense Secondary Streets (Light Grey Grid) */}
+                        <path d="M 40 -10 L 40 100 M 80 -10 L 80 100 M 120 -10 L 120 100 M 260 -10 L 260 100 M 300 -10 L 300 100" stroke="#e0e4df" strokeWidth="1" />
+                        <path d="M -10 25 L 350 25 M -10 50 L 350 50 M -10 75 L 350 75" stroke="#e0e4df" strokeWidth="1" />
+                        
+                        {/* Diagonal Streets ("敦化路一段" block lines) */}
+                        <path d="M 100 -10 L 200 100 M 130 -10 L 230 100 M 160 -10 L 260 100 M 190 -10 L 290 100" stroke="#e0e4df" strokeWidth="1" />
+                        <path d="M 120 0 L 20 80 M 180 0 L 60 90 M 240 0 L 120 90 M 300 0 L 180 90" stroke="#e0e4df" strokeWidth="0.8" />
+                        
+                        {/* Major Gray Road */}
+                        <path d="M 0 45 L 340 45" stroke="#d5dad3" strokeWidth="3" />
+
+                        {/* Thick Blue Highway */}
+                        <path d="M 130 0 L 210 90" stroke="#547192" strokeWidth="7" strokeLinecap="round" />
+                        <path d="M 130 0 L 210 90" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
+
+                        {/* Highway Shield Icon (Blue shield with "1Z") */}
+                        <g transform="translate(142, 22)">
+                          <path d="M 0 0 C 4 -2 12 -2 16 0 C 16 6 12 12 8 15 C 4 12 0 6 0 0 Z" fill="#3a75c4" stroke="#ffffff" strokeWidth="0.8" />
+                          <text x="8" y="9" fill="#ffffff" fontSize="6.5" fontFamily="sans-serif" textAnchor="middle" className="font-bold select-none scale-[0.95]">1Z</text>
+                        </g>
+
+                        {/* Tiny Text Labels */}
+                        <text x="12" y="52" fill="#6f9f74" fontSize="9" fontFamily="sans-serif" className="font-bold select-none">公園</text>
+                        <text x="175" y="70" fill="#4d5349" fontSize="10" fontFamily="sans-serif" className="font-bold select-none">陳平</text>
+                        
+                        {/* Rotated road names */}
+                        <g transform="translate(195, 25) rotate(48)">
+                          <text x="0" y="0" fill="#888f83" fontSize="7" fontFamily="sans-serif" className="font-medium select-none">敦化路一段</text>
+                        </g>
+                        <g transform="translate(205, 52) rotate(48)">
+                          <text x="0" y="0" fill="#888f83" fontSize="7" fontFamily="sans-serif" className="font-medium select-none">陳平路</text>
+                        </g>
+                      </svg>
+                      
+                      {/* Map Pin Icon (Black triangle pointing down) */}
+                      <div className="absolute top-[50%] left-[48%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                        <span className="text-[14px] text-[#122315] select-none font-bold drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">▼</span>
+                      </div>
+                    </div>
+
+                    {/* Bottom block: Transaction details */}
+                    <div className="bg-white border border-slate-100/80 rounded-2xl p-5 shadow-sm flex flex-col gap-3 font-sans text-[11px]">
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-400">Transaction date</span>
+                        <span className="text-slate-800 font-medium">September 27, 2025</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-400">Method</span>
+                        <span className="text-slate-800 font-medium">Apple Pay</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -1141,7 +1305,7 @@ export default function ScrollStory() {
             })()}
             {/* 1. Stage 2 Center Typography */}
             <div 
-              className="absolute max-w-3xl text-center px-6 z-30 transition-all duration-300 ease-out flex flex-col gap-4 text-[#0f172a]"
+              className="absolute max-w-3xl text-center px-6 z-30 transition-all duration-300 ease-out flex flex-col gap-2 sm:gap-4 text-[#0f172a]"
               style={{
                 opacity: s2TextOpacity,
                 transform: `translate3d(0, ${s2Prog < 0.15 ? (1 - s2Prog / 0.15) * -15 : 0}px, 0)`,
@@ -1150,20 +1314,20 @@ export default function ScrollStory() {
               {/* <span className="text-xs font-mono tracking-[0.2em] text-cyan-700 uppercase font-semibold">
                 階段 02 — 直覺式解析
               </span> */}
-              <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
                 AI 代理人即時清理、掃描
                 <span className="text-cyan-600 block mt-1">
                   並結構化原始數據。
                 </span>
               </h2>
-              <p className="text-sm md:text-base text-slate-500 leading-relaxed max-w-2xl mx-auto">
+              <p className="text-sm sm:text-base md:text-lg text-slate-500 leading-relaxed max-w-2xl mx-auto">
                 我們的平台掃描交易日誌、提取隱藏商戶、解析位置並交叉比對商戶登記處。在毫秒之間，交易數據從混亂無序轉化為乾淨的 JSON 格式。
               </p>
             </div>
 
             {/* 2. SVG Connection Lines in the Background */}
             {s2Prog >= 0.55 && (
-              <div className="absolute w-[800px] h-[600px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10">
+              <div className="absolute w-[800px] h-[600px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10 scale-[0.45] sm:scale-75 md:scale-100 origin-center">
                 <svg width="800" height="600" className="w-full h-full">
                   {stage2Files.map((file, idx) => {
                     const cardState = getS2CardState(idx);
@@ -1208,7 +1372,7 @@ export default function ScrollStory() {
 
             {/* 3. Scattered File Cards */}
             {s2Prog >= 0.20 && (
-              <div className="absolute w-[800px] h-[600px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-20 pointer-events-none">
+              <div className="absolute w-[800px] h-[600px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-20 pointer-events-none scale-[0.45] sm:scale-75 md:scale-100 origin-center">
                 {stage2Files.map((file, idx) => {
                   const cardState = getS2CardState(idx);
                   if (cardState.opacity === 0) return null;

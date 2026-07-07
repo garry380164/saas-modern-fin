@@ -34,8 +34,8 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-[#f3f5f6] text-[#0f172a]">
       
       {/* FLOATING GLASS PILLED NAVBAR */}
-      <header className="fixed top-0 inset-x-0 z-40 px-6 mt-6 pointer-events-none">
-        <div className="max-w-[1400px] mx-auto w-full glass-panel py-3.5 px-8 flex items-center justify-between pointer-events-auto shadow-[0_10px_30px_rgba(15,23,42,0.06),inset_0_1px_1px_rgba(255,255,255,0.8)] border-black/[0.06]">
+      <header className="fixed top-0 inset-x-0 z-40 md:px-6 md:mt-6 pointer-events-none">
+        <div className="max-w-[1400px] mx-auto w-full px-6 py-3.5 md:py-3.5 md:px-8 flex items-center justify-between pointer-events-auto bg-white/80 backdrop-blur-md md:glass-panel border-b border-black/[0.06] md:border md:rounded-full shadow-[0_4px_20px_rgba(15,23,42,0.04)] md:shadow-[0_10px_30px_rgba(15,23,42,0.06),inset_0_1px_1px_rgba(255,255,255,0.8)] border-black/[0.06]">
           {/* Logo */}
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
             <div className="w-6 h-6 rounded-md bg-gradient-to-tr from-accent-emerald to-accent-cyan flex items-center justify-center text-white font-extrabold text-sm">
