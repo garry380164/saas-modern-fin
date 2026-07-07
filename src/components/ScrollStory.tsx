@@ -944,45 +944,50 @@ export default function ScrollStory() {
                   </motion.div>
                 )}
 
-                {/* 4. Location & Merchant Card */}
-                {s3Prog >= 0.55 && s3Prog < 0.88 && (
-                  <motion.div
-                    style={{ opacity: c4Opacity * (1 - c5Opacity), y: (1 - c4Opacity) * 12 }}
-                    className="w-full shrink-0 flex flex-col gap-2"
-                  >
-                    <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
-                      <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5 font-sans">▸ 驗證商戶</span>
-                      <span className="text-xs font-bold text-slate-800 block min-h-[14px]">
-                        {scrambleReveal("蘋果公司 (APPLE)", c4ScrambleProg)}
-                      </span>
-                    </Card>
-                    <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
-                      <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5 font-sans">▸ 地理位置</span>
-                      <span className="text-xs text-slate-700 block font-sans min-h-[14px] leading-tight">
-                        {scrambleReveal("美國德州達拉斯波爾克南街 8770 號", c4ScrambleProg)}
-                      </span>
-                    </Card>
-                  </motion.div>
-                )}
+                {/* 4 & 5. Stacking Slot for Location/Merchant and Data Category */}
+                {s3Prog >= 0.55 && (
+                  <div className="relative w-full h-[135px] shrink-0">
+                    {/* 4. Location & Merchant Card */}
+                    {s3Prog < 0.88 && (
+                      <motion.div
+                        style={{ opacity: c4Opacity * (1 - c5Opacity), y: (1 - c4Opacity) * 12 }}
+                        className="absolute inset-x-0 top-0 flex flex-col gap-2 w-full"
+                      >
+                        <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
+                          <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5 font-sans">▸ 驗證商戶</span>
+                          <span className="text-xs font-bold text-slate-800 block min-h-[14px]">
+                            {scrambleReveal("蘋果公司 (APPLE)", c4ScrambleProg)}
+                          </span>
+                        </Card>
+                        <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
+                          <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5 font-sans">▸ 地理位置</span>
+                          <span className="text-xs text-slate-700 block font-sans min-h-[14px] leading-tight">
+                            {scrambleReveal("美國德州達拉斯波爾克南街 8770 號", c4ScrambleProg)}
+                          </span>
+                        </Card>
+                      </motion.div>
+                    )}
 
-                {/* 5. Data Category Card */}
-                {s3Prog >= 0.76 && (
-                  <motion.div
-                    style={{ opacity: c5Opacity, y: (1 - c5Opacity) * 12 }}
-                    className="w-full shrink-0"
-                  >
-                    <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
-                      <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5 font-sans">▸ 數據分類</span>
-                      <span className="text-xs font-extrabold text-slate-800 block min-h-[14px]">
-                        {scrambleReveal("科技與技術", c5ScrambleProg)}
-                      </span>
-                      <span className="text-[10px] text-slate-400 block mt-1 min-h-[24px] leading-tight">
-                        {scrambleReveal("軟體與服務", c5ScrambleProg)}
-                        <br />
-                        {scrambleReveal("消費性電子產品", c5ScrambleProg)}
-                      </span>
-                    </Card>
-                  </motion.div>
+                    {/* 5. Data Category Card */}
+                    {s3Prog >= 0.76 && (
+                      <motion.div
+                        style={{ opacity: c5Opacity, y: (1 - c5Opacity) * 12 }}
+                        className="absolute inset-x-0 top-0 w-full"
+                      >
+                        <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
+                          <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5 font-sans">▸ 數據分類</span>
+                          <span className="text-xs font-extrabold text-slate-800 block min-h-[14px]">
+                            {scrambleReveal("科技與技術", c5ScrambleProg)}
+                          </span>
+                          <span className="text-[10px] text-slate-400 block mt-1 min-h-[24px] leading-tight">
+                            {scrambleReveal("軟體與服務", c5ScrambleProg)}
+                            <br />
+                            {scrambleReveal("消費性電子產品", c5ScrambleProg)}
+                          </span>
+                        </Card>
+                      </motion.div>
+                    )}
+                  </div>
                 )}
               </div>
 
