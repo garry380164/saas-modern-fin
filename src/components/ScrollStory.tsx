@@ -582,7 +582,7 @@ export default function ScrollStory() {
                   </div>
                 </div>
 
-                <div className="relative w-full max-w-[580px] h-[450px] flex items-center justify-center scale-[0.55] sm:scale-75 lg:scale-100 origin-center">
+                <div className="relative w-full max-w-[580px] h-[450px] flex items-center justify-center scale-[0.72] sm:scale-[0.85] lg:scale-100 origin-center">
                   {stage1Cards.map((card, idx) => {
                     const cardState = getS1CardState(idx);
                     if (cardState.style.opacity === 0) return null;
@@ -902,13 +902,13 @@ export default function ScrollStory() {
               <div 
                 className="flex md:hidden flex-col gap-3 w-full px-6 max-h-[360px] overflow-y-auto absolute top-[190px] pb-6 transition-transform duration-75"
                 style={{
-                  transform: `translate3d(0, ${-210 * c3Opacity}px, 0)`
+                  transform: `translate3d(0, ${-90 * c3Opacity}px, 0)`
                 }}
               >
                 {/* 1. cURL Terminal Card */}
-                {s3Prog > 0 && (
+                {s3Prog > 0 && s3Prog < 0.55 && (
                   <motion.div
-                    style={{ opacity: c1Opacity, y: (1 - c1Opacity) * 12 }}
+                    style={{ opacity: c1Opacity * (1 - c3Opacity), y: (1 - c1Opacity) * 12 }}
                     className="w-full shrink-0"
                   >
                     <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
@@ -924,9 +924,9 @@ export default function ScrollStory() {
                 )}
 
                 {/* 2. API Key & Latency Card */}
-                {s3Prog >= 0.20 && (
+                {s3Prog >= 0.20 && s3Prog < 0.55 && (
                   <motion.div
-                    style={{ opacity: c2Opacity, y: (1 - c2Opacity) * 12 }}
+                    style={{ opacity: c2Opacity * (1 - c3Opacity), y: (1 - c2Opacity) * 12 }}
                     className="w-full shrink-0 flex flex-col gap-2"
                   >
                     <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
@@ -945,9 +945,9 @@ export default function ScrollStory() {
                 )}
 
                 {/* 4. Location & Merchant Card */}
-                {s3Prog >= 0.55 && (
+                {s3Prog >= 0.55 && s3Prog < 0.88 && (
                   <motion.div
-                    style={{ opacity: c4Opacity, y: (1 - c4Opacity) * 12 }}
+                    style={{ opacity: c4Opacity * (1 - c5Opacity), y: (1 - c4Opacity) * 12 }}
                     className="w-full shrink-0 flex flex-col gap-2"
                   >
                     <Card outerClassName="!p-3 border-slate-200 bg-white" tickColor="border-slate-800">
